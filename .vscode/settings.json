@@ -1,0 +1,10 @@
+{
+  // Nutze die venv als Interpreter
+  "python.pythonPath": "${workspaceFolder}/venv/bin/python",
+
+  // Automatisches Einlesen der .env
+  "python.envFile": "${workspaceFolder}/.env",
+
+  // Import-Pfade für src/
+  "python.analysis.extraPaths": ["./src"]
+}

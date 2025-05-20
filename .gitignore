@@ -1,0 +1,9 @@
+# Virtual Environment
+venv/
+# Umgebungsschlüssel
+.env
+# Bytecode & Cache
+__pycache__/
+*.pyc
+# Notebook-Checkpoints
+.ipynb_checkpoints/
