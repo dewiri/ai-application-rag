@@ -2,13 +2,22 @@
 
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+# API-Key muss vorhanden sein UND in Anführungszeichen stehen
+if not api_key or not api_key.startswith("sk-"):
+    raise ValueError(
+        "OPENAI_API_KEY is missing or invalid. "
+        "Please set it in .env as OPENAI_API_KEY=\"sk-...\""
+    )
 
 from openai import OpenAI
 import numpy as np
 
-# Deutscher Kommentar: Initialisiere OpenAI-Client mit API-Key aus .env
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=api_key)
 
 def embed_texts(texts: list[str]) -> list[np.ndarray]:
     """
