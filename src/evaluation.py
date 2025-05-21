@@ -8,7 +8,7 @@ from openai import OpenAI
 import numpy as np
 import random
 from src.ingestion import load_and_chunk
-from src.embeddings import embed_texts
+from embedding_local import embed_texts
 from src.retrieval import build_faiss_index, retrieve, hyde_expand
 from src.rerank import rerank
 

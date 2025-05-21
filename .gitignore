@@ -1,9 +1,13 @@
+# Bytecode / Cache
+__pycache__/
+*.py[cod]
+
 # Virtual Environment
 venv/
-# Umgebungsschlüssel
 .env
-# Bytecode & Cache
-__pycache__/
-*.pyc
-# Notebook-Checkpoints
+
+# FAISS optional (falls nicht mitpushen)
+vectorstore/
+
+# Jupyter Checkpoints
 .ipynb_checkpoints/

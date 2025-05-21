@@ -25,3 +25,18 @@ streamlit>=1.25.0
 
 # Testing
 pytest>=7.2.0
+
+openai
+groq
+python-dotenv
+pdfplumber
+langchain
+faiss-cpu
+sentence-transformers
+streamlit
+pytest
+
+faiss-cpu
+sentence-transformers
+pdfplumber
+python-dotenv

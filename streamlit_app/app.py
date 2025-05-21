@@ -1,57 +1,121 @@
-# streamlit_app/app.py
-
+import sys
 import os
-from dotenv import load_dotenv
-load_dotenv()
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import streamlit as st
-import numpy as np
-from openai import OpenAI
+from src.retrieval import retrieve
+from src.api_client import client
+import base64
 
-from src.ingestion import load_and_chunk
-from src.embeddings import embed_texts
-from src.retrieval import build_faiss_index, retrieve, hyde_expand
-from src.rerank import rerank
+# ✅ Streamlit-Seitenkonfiguration
+st.set_page_config(page_title="Catan Rule Expert", page_icon="🧱")
 
-# Init OpenAI-Client
-oa = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ Hintergrundbild laden und einbetten
+def get_base64_image(image_path):
+    with open(image_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
-st.set_page_config(page_title="Catan Rule Expert", layout="wide")
-st.sidebar.title("Catan Rule Expert Bot")
-model_choice = st.sidebar.selectbox("Choose model", ["gpt-4", "gpt-3.5-turbo"])
-query = st.text_input("Ask a Catan rule question:")
+bg_image = get_base64_image("streamlit_app/assets/catan_bg.jpg")
 
-@st.cache_resource
-def init_index():
-    chunks = load_and_chunk("data")
-    embs = embed_texts(chunks)
-    return build_faiss_index(embs), chunks
+# ✅ Stildefinition (CSS)
+st.markdown(
+    f"""
+    <style>
+    html, body {{
+        background-image: url("data:image/jpg;base64,{bg_image}");
+        background-size: cover;
+        background-attachment: fixed;
+        color: #111111;
+    }}
+    .stApp {{
+        background-color: rgba(250, 235, 215, 0.82);
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 850px;
+        margin: auto;
+        box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    }}
+    h1 {{
+        color: #111111;
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }}
+    .stSelectbox, .stTextInput {{
+        background-color: #111111;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }}
+    .stMarkdown {{
+        font-size: 1.1rem;
+        color: #111111;
+    }}
+    details.st-expander {{
+        border: 1px solid #111111 !important;
+        border-radius: 8px;
+        padding: 0.5rem;
+        color: #111111;
+    }}
+    details.st-expander summary {{
+        color: #111111;
+        font-weight: 600;
+        font-size: 1rem;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-index, all_chunks = init_index()
+# ✅ App-Überschrift
+st.markdown("""
+    <h1 style='text-align: center; color: #B22222;'>🧱 Catan Regel-Chatbot</h1>
+""", unsafe_allow_html=True)
 
-if st.button("Submit") and query:
-    # HyDE + Retrieval
-    pseudo = hyde_expand(query)
-    q_emb = oa.embeddings.create(model="text-embedding-ada-002", input=[query]).data[0].embedding
-    p_emb = oa.embeddings.create(model="text-embedding-ada-002", input=[pseudo]).data[0].embedding
+st.markdown("Stelle mir Fragen zu den Spielregeln von **Catan** (inkl. Erweiterungen).")
 
-    hits_q = retrieve(index, np.array(q_emb), top_k=20)
-    hits_p = retrieve(index, np.array(p_emb), top_k=20)
-    ids = list({i for i,_ in hits_q+hits_p})
-    docs = [all_chunks[i] for i in ids]
+# ✅ Modellwahl
+model = st.selectbox(" - Modell", ["llama3-70b-8192", "mixtral-8x7b-32768"])
 
-    # Reranking
-    top3 = rerank(query, docs, top_n=3)
+# ✅ Texteingabe
+query = st.text_input(" ❓ Deine Frage")
 
-    # Prompt & Antwort
-    info = "\n\n".join(top3)
-    prompt = (
-        "Answer solely based on the following rules:\n"
-        f"<information>{info}</information>\n\nQuestion: {query}"
-    )
-    ans = oa.chat.completions.create(
-        model=model_choice,
-        messages=[{"role": "system", "content": prompt}]
-    ).choices[0].message.content
+# ✅ Verarbeitung & Antwort
+if query:
+    with st.spinner("🔄 Denke nach ..."):
+        docs = retrieve(query, top_k=5)
+        context = "\n\n".join(docs)
 
-    st.markdown(f"**Answer:**  {ans}")
+        prompt = f"""Beantworte die folgende Frage basierend auf dem gegebenen Kontext.
+
+==================== Kontext =====================
+{context}
+
+==================== Frage =====================
+{query}
+
+==================== Antwort ===================="""
+
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "Du bist ein hilfreicher Catan-Regel-Experte."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        answer = response.choices[0].message.content.strip()
+
+        # ✅ Antwort anzeigen
+        st.markdown("### 💬 Antwort")
+        st.write(answer)
+
+        # ✅ Kontext anzeigen mit gestyltem HTML-Block
+        with st.expander("🔍 Kontext anzeigen"):
+            st.markdown(
+                f"<div style='background-color: rgba(0, 0, 0, 0.05); "
+                f"padding: 1rem; border-radius: 8px; color: #111111; "
+                f"font-family: sans-serif; font-size: 0.95rem;'>{context.replace(chr(10), '<br>')}</div>",
+                unsafe_allow_html=True
+            )
