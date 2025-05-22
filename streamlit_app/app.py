@@ -7,10 +7,10 @@ from src.retrieval import retrieve
 from src.api_client import client
 import base64
 
-# ✅ Streamlit-Seitenkonfiguration
-st.set_page_config(page_title="Catan Rule Expert", page_icon="🧱")
+# Page configuration
+st.set_page_config(page_title="Catan Rule Expert", page_icon=None)
 
-# ✅ Hintergrundbild laden und einbetten
+# Load background image and convert to base64
 def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
@@ -18,7 +18,7 @@ def get_base64_image(image_path):
 
 bg_image = get_base64_image("streamlit_app/assets/catan_bg.jpg")
 
-# ✅ Stildefinition (CSS)
+# Custom style
 st.markdown(
     f"""
     <style>
@@ -42,12 +42,6 @@ st.markdown(
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }}
-    .stSelectbox, .stTextInput {{
-        background-color: #111111;
-        border-radius: 0.5rem;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }}
     .stMarkdown {{
         font-size: 1.1rem;
         color: #111111;
@@ -68,51 +62,64 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ✅ App-Überschrift
-st.markdown("""
-    <h1 style='text-align: center; color: #B22222;'>🧱 Catan Regel-Chatbot</h1>
-""", unsafe_allow_html=True)
+# Header
+st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("Ask any question about the rules of Catan (including expansions).")
 
-st.markdown("Stelle mir Fragen zu den Spielregeln von **Catan** (inkl. Erweiterungen).")
+# Most asked questions dropdown
+example_questions = [
+    "Can I build a settlement directly next to another one?",
+    "What happens when the robber is moved?",
+    "How many victory points do I need to win?",
+    "Can I trade development cards?",
+    "What is the longest road and how do I get it?",
+    "Can I build multiple roads in one turn?",
+    "How do harbors work in Seafarers?",
+    "What happens if I roll a 7 and have too many cards?",
+    "Do cities count as two settlements for building restrictions?",
+    "How do I use knights in Cities & Knights?"
+]
 
-# ✅ Modellwahl
-model = st.selectbox(" - Modell", ["llama3-70b-8192", "mixtral-8x7b-32768"])
+selected_example = st.selectbox("Most asked questions (optional):", [""] + example_questions)
 
-# ✅ Texteingabe
-query = st.text_input(" ❓ Deine Frage")
+# Input field
+query = st.text_input("Your question", value=selected_example if selected_example else "")
 
-# ✅ Verarbeitung & Antwort
+# Fixed model
+model = "llama3-70b-8192"
+
+# On query
 if query:
-    with st.spinner("🔄 Denke nach ..."):
+    with st.spinner("Generating answer..."):
         docs = retrieve(query, top_k=5)
         context = "\n\n".join(docs)
 
-        prompt = f"""Beantworte die folgende Frage basierend auf dem gegebenen Kontext.
+        prompt = f"""Answer the following question based on the given context.
 
-==================== Kontext =====================
+==================== Context =====================
 {context}
 
-==================== Frage =====================
+==================== Question =====================
 {query}
 
-==================== Antwort ===================="""
+==================== Answer ===================="""
 
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": "Du bist ein hilfreicher Catan-Regel-Experte."},
+                {"role": "system", "content": "You are a helpful expert on the rules of Catan."},
                 {"role": "user", "content": prompt}
             ]
         )
 
         answer = response.choices[0].message.content.strip()
 
-        # ✅ Antwort anzeigen
-        st.markdown("### 💬 Antwort")
+        # Show result
+        st.markdown("### Answer")
         st.write(answer)
 
-        # ✅ Kontext anzeigen mit gestyltem HTML-Block
-        with st.expander("🔍 Kontext anzeigen"):
+        # Show context in expander
+        with st.expander("Show retrieved context"):
             st.markdown(
                 f"<div style='background-color: rgba(0, 0, 0, 0.05); "
                 f"padding: 1rem; border-radius: 8px; color: #111111; "
