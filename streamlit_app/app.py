@@ -50,17 +50,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Title
-st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
-st.markdown("Ask any question about the rules of Catan (including expansions).")
+# Title and subtitle
+st.markdown("<h1 style='text-align: center; color: #111111;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #111111; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>", unsafe_allow_html=True)
 
 # Fixed model display (not editable)
 st.text_input("Model", value="llama3-70b-8192", disabled=True)
 
-# Input field
-query = st.text_input("Your question")
-
-# Most asked questions under input
+# Most asked questions list
 example_questions = [
     "Can I build a settlement directly next to another one?",
     "What happens when the robber is moved?",
@@ -74,15 +71,24 @@ example_questions = [
     "How do I use knights in Cities & Knights?"
 ]
 
-selected_example = st.selectbox("Most asked questions (optional):", [""] + example_questions)
-if selected_example:
-    query = selected_example
-    st.experimental_rerun()
+# Dropdown for selecting example question
+selected_example = st.selectbox(
+    "Most asked questions (optional):",
+    [""] + example_questions,
+    key="selected_example"
+)
 
-# Fixed model
+# Main input field
+query = st.text_input(
+    "Your question",
+    value=st.session_state.selected_example if st.session_state.selected_example else "",
+    key="query_input"
+)
+
+# Fixed model value
 model = "llama3-70b-8192"
 
-# Answer generation
+# Process query
 if query:
     with st.spinner("Generating answer..."):
         docs = retrieve(query, top_k=5)
@@ -108,11 +114,11 @@ if query:
 
         answer = response.choices[0].message.content.strip()
 
-        # Answer output
+        # Display answer
         st.markdown("### Answer")
         st.write(answer)
 
-        # Context display
+        # Show context
         with st.expander("Show retrieved context"):
             st.markdown(
                 f"<div style='background-color: rgba(0, 0, 0, 0.05); "
