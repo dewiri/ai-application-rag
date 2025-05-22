@@ -7,18 +7,17 @@ from src.retrieval import retrieve
 from src.api_client import client
 import base64
 
-# Page configuration
+# Page config
 st.set_page_config(page_title="Catan Rule Expert", page_icon=None)
 
-# Load background image and convert to base64
+# Background image
 def get_base64_image(image_path):
     with open(image_path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
+        return base64.b64encode(f.read()).decode()
 
 bg_image = get_base64_image("streamlit_app/assets/catan_bg.jpg")
 
-# Custom style
+# Custom styling
 st.markdown(
     f"""
     <style>
@@ -42,31 +41,26 @@ st.markdown(
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }}
-    .stMarkdown {{
-        font-size: 1.1rem;
-        color: #111111;
-    }}
-    details.st-expander {{
-        border: 1px solid #111111 !important;
-        border-radius: 8px;
-        padding: 0.5rem;
-        color: #111111;
-    }}
-    details.st-expander summary {{
-        color: #111111;
+    label, .stTextInput label {{
+        color: #111111 !important;
         font-weight: 600;
-        font-size: 1rem;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Header
+# Title
 st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
 st.markdown("Ask any question about the rules of Catan (including expansions).")
 
-# Most asked questions dropdown
+# Fixed model display (not editable)
+st.text_input("Model", value="llama3-70b-8192", disabled=True)
+
+# Input field
+query = st.text_input("Your question")
+
+# Most asked questions under input
 example_questions = [
     "Can I build a settlement directly next to another one?",
     "What happens when the robber is moved?",
@@ -81,14 +75,14 @@ example_questions = [
 ]
 
 selected_example = st.selectbox("Most asked questions (optional):", [""] + example_questions)
-
-# Input field
-query = st.text_input("Your question", value=selected_example if selected_example else "")
+if selected_example:
+    query = selected_example
+    st.experimental_rerun()
 
 # Fixed model
 model = "llama3-70b-8192"
 
-# On query
+# Answer generation
 if query:
     with st.spinner("Generating answer..."):
         docs = retrieve(query, top_k=5)
@@ -114,11 +108,11 @@ if query:
 
         answer = response.choices[0].message.content.strip()
 
-        # Show result
+        # Answer output
         st.markdown("### Answer")
         st.write(answer)
 
-        # Show context in expander
+        # Context display
         with st.expander("Show retrieved context"):
             st.markdown(
                 f"<div style='background-color: rgba(0, 0, 0, 0.05); "
