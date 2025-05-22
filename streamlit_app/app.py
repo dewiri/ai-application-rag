@@ -2,10 +2,12 @@ import sys
 import os
 import base64
 import streamlit as st
+
+# Add parent directory to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from src.retrieval import retrieve
 from src.api_client import client
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Page setup
 st.set_page_config(page_title="Catan Rule Expert", page_icon="🎲")
@@ -38,24 +40,70 @@ st.markdown(
     h1, label {{
         color: #111111 !important;
     }}
+    .example-header {{
+        text-align: center;
+        font-weight: bold;
+        margin-top: 2rem;
+        margin-bottom: 0.3rem;
+    }}
+    .example-container {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        margin-bottom: 1.5rem;
+    }}
+    .stButton > button {{
+        background-color: rgba(255,255,255,0.05) !important;
+        border: none !important;
+        color: #111111 !important;
+        padding: 0.35rem 0.75rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 6px !important;
+        width: fit-content;
+        margin: 0 auto;  /* ✅ zentriert den Button horizontal */
+        display: block;  /* ✅ nötig für zentrierung mit margin */
+    }}
+    .stButton > button:hover {{
+        background-color: rgba(255,255,255,0.15) !important;
+    }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Title
+# Session state
+if "query_input" not in st.session_state:
+    st.session_state.query_input = ""
+
+# Title and subtitle
 st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
 st.markdown(
     "<p style='text-align: center; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>",
     unsafe_allow_html=True
-)   
+)
 
-# Fixed model display (not editable)
+# Example questions
+examples = [
+    "Can I build a settlement directly next to another one?",
+    "What happens if I roll a 7 and have too many cards?",
+    "How do knights work in Cities & Knights?"
+]
+
+# Display example buttons centered
+st.markdown("<div class='example-header'>Example sentences:</div>", unsafe_allow_html=True)
+st.markdown("<div class='example-container'>", unsafe_allow_html=True)
+for idx, example in enumerate(examples):
+    if st.button(example, key=f"ex_{idx}"):
+        st.session_state.query_input = example
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Fixed model display
 model = "llama3-70b-8192"
 st.text_input("Model", value=model, disabled=True)
 
 # Input field
-query = st.text_input("Your question")
+query = st.text_input("Your question", value=st.session_state.query_input, key="query_input")
 
 # Answer generation
 if query:
@@ -83,11 +131,9 @@ if query:
 
         answer = response.choices[0].message.content.strip()
 
-        # Output
         st.markdown("### Answer")
         st.write(answer)
 
-        # Context viewer
         with st.expander("Show retrieved context"):
             st.markdown(
                 f"<div style='background-color: rgba(0, 0, 0, 0.05); "
