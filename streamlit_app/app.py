@@ -10,14 +10,14 @@ import base64
 # Page config
 st.set_page_config(page_title="Catan Rule Expert", page_icon=None)
 
-# Background image
+# Load background image
 def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
 bg_image = get_base64_image("streamlit_app/assets/catan_bg.jpg")
 
-# Custom styling
+# Custom CSS
 st.markdown(
     f"""
     <style>
@@ -35,15 +35,8 @@ st.markdown(
         margin: auto;
         box-shadow: 0 0 30px rgba(0,0,0,0.2);
     }}
-    h1 {{
-        color: #111111;
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }}
-    label, .stTextInput label {{
+    h1, h2, p, label {{
         color: #111111 !important;
-        font-weight: 600;
     }}
     </style>
     """,
@@ -51,13 +44,20 @@ st.markdown(
 )
 
 # Title and subtitle
-st.markdown("<h1 style='text-align: center; color: #111111;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #111111; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>", unsafe_allow_html=True)
 
-# Fixed model display (not editable)
+# Fixed model display
 st.text_input("Model", value="llama3-70b-8192", disabled=True)
 
-# Most asked questions list
+# Input field with state
+query = st.text_input(
+    "Your question",
+    value=st.session_state.get("query_input", ""),
+    key="query_input"
+)
+
+# Example questions
 example_questions = [
     "Can I build a settlement directly next to another one?",
     "What happens when the robber is moved?",
@@ -71,24 +71,24 @@ example_questions = [
     "How do I use knights in Cities & Knights?"
 ]
 
-# Dropdown for selecting example question
-selected_example = st.selectbox(
-    "Most asked questions (optional):",
-    [""] + example_questions,
-    key="selected_example"
-)
+# Session state for toggle
+if "show_examples" not in st.session_state:
+    st.session_state.show_examples = False
 
-# Main input field
-query = st.text_input(
-    "Your question",
-    value=st.session_state.selected_example if st.session_state.selected_example else "",
-    key="query_input"
-)
+# Button to show/hide examples
+if st.button("Most asked questions"):
+    st.session_state.show_examples = not st.session_state.show_examples
 
-# Fixed model value
-model = "llama3-70b-8192"
+# Show question buttons
+if st.session_state.show_examples:
+    st.markdown("<p style='color: #111111;'>Click a question below:</p>", unsafe_allow_html=True)
+    for q in example_questions:
+        if st.button(q, key=q):
+            st.session_state.query_input = q
+            st.session_state.show_examples = False
+            st.experimental_rerun()
 
-# Process query
+# Run LLM only if a query is entered
 if query:
     with st.spinner("Generating answer..."):
         docs = retrieve(query, top_k=5)
@@ -105,7 +105,7 @@ if query:
 ==================== Answer ===================="""
 
         response = client.chat.completions.create(
-            model=model,
+            model="llama3-70b-8192",
             messages=[
                 {"role": "system", "content": "You are a helpful expert on the rules of Catan."},
                 {"role": "user", "content": prompt}
