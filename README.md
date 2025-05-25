@@ -55,9 +55,24 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 ## Vector Store
 
-- Used **FAISS** to store precomputed embeddings
-- Embeddings were created once using **OpenAI's `text-embedding-ada-002`**
-- Stored to disk and reused at runtime
+We use **FAISS** to store precomputed embeddings, enabling fast semantic search over rule texts.
+
+### Version 1 (Initial Setup)
+
+- One **single** FAISS vector store for all rulebooks combined  
+- Embeddings created with **OpenAI’s `text-embedding-ada-002`**  
+- Chunks stored once and reused at runtime  
+
+### Version 2 (Updated – Variant-Aware)
+
+- One **dedicated FAISS vector store per game variant**  
+  (e.g., `basegame`, `seafarers`, `cities_knights`, etc.)  
+- Embeddings still created using **OpenAI’s `text-embedding-ada-002`**  
+- Stored **separately per rulebook**, enabling more precise, variant-specific retrieval and similarity scoring  
+- Allows **cross-variant comparisons**  
+  (e.g., “how does this rule differ in Seafarers vs. Basegame?”)  
+
+> This upgrade enables a more accurate, modular, and explainable retrieval process.
 
 ---
 
@@ -77,12 +92,32 @@ The system retrieves relevant rule passages and uses a language model to generat
   - LLM model
   - Display of generated answer
   - Expandable section for retrieved context
+  - Similarity analysis across all game variants
+---
+
+## Retrieval Methods: Before vs. Now
+
+| Aspect                        | Before (Single-Variant Retrieval)                            | Now (Variant-Aware Retrieval + Cross-Variant Analysis)                  |
+|-------------------------------|--------------------------------------------------------------|-------------------------------------------------------------------------|
+| Vector Store Setup             | One single FAISS index for all game rules combined           | Separate FAISS index per game variant (basegame, seafarers, etc.)       |
+| Query Execution               | Search performed on the combined index                        | Search primarily on selected variant’s index                            |
+| Cross-Variant Comparison      | Not available                                                | Question also compared across all variant indexes for similarity        |
+| Hybrid Retrieval              | Not implemented                                              | Combines semantic similarity and keyword matching within variant       |
+| Result Precision             | Lower precision, generic answers                             | Higher precision, variant-specific answers                             |
+| Transparency                 | No insight into variant differences                         | Shows similarity scores across all variants to highlight rule differences |
+| User Experience              | Simpler but less accurate                                    | More informative and accurate, supports complex queries                 |
+
+---
+
+**Summary:**  
+The current system uses variant-specific vector stores with optional cross-variant similarity analysis, enabling more precise and transparent rule retrieval tailored to the selected game variant.
 
 ---
 
 ## Environment
 
-Environment variables managed with `python-dotenv`:
+- When running **locally**, environment variables (e.g. API keys) are loaded via `.env` using `python-dotenv`.
+- On **Streamlit Cloud**, all credentials are securely managed via **Streamlit secrets** (`.streamlit/secrets.toml`).
 
 
 ## Evaluation & Testing
@@ -106,11 +141,11 @@ The chatbot was evaluated in two distinct stages:
 - **Approach:** Human-reviewed for overall correctness
 - **Results:**
 
-| Evaluation         | Count | Description                                  |
-|--------------------|-------|----------------------------------------------|
-| Correct          | 31    | Fully or mostly accurate responses           |
-| Partially correct | 6     | Incomplete or slightly misleading            |
-| Incorrect        | 3     | Factually wrong or unclear                   |
+| Category           | Count | Percentage | Description                                  |
+|--------------------|-------|------------|----------------------------------------------|
+| Correct            | 31    | 77.5 %     | Fully or mostly accurate responses           |
+| Partially correct  | 6     | 15.0 %     | Incomplete or slightly misleading            |
+| Incorrect          | 3     | 7.5 %      | Factually wrong or unclear                   |
 
 > **Conclusion:** Quality-based review reveals ~78% effective accuracy, better than the keyword-only method.
 
@@ -126,11 +161,11 @@ The chatbot was evaluated in two distinct stages:
 
 #### Evaluation Results
 
-| Category             | Count | Percentage |
-|----------------------|-------|------------|
-| Correct            | 34    | 85.0 %     |
-| Partially correct  | 4     | 10.0 %     |
-| Incorrect          | 2     | 5.0 %      |
+| Category           | Count | Percentage | Description                                  |
+|--------------------|-------|------------|----------------------------------------------|
+| Correct            | 34    | 85.0 %     | Fully or mostly accurate responses           |
+| Partially correct  | 4     | 10.0 %     | Incomplete or slightly misleading            |
+| Incorrect          | 2     | 5.0 %      | Factually wrong or unclear                   |
 
 > **Conclusion:**  
 The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **62.5% to 80%**, and manual review shows that **85%** of answers are now fully correct. This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.

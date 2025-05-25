@@ -6,13 +6,13 @@ import streamlit as st
 
 # Pfad-Anpassung
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from src.retrieval import retrieve
+from src.retrieval import retrieve, retrieve_hybrid
 from src.api_client import client
+from src.variant_similarity import retrieve_across_variants  # NEU
 
 # --- Streamlit Setup ---
 st.set_page_config(page_title="Catan Rule Expert", page_icon="🎲")
 
-# Hintergrundbild laden
 def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
@@ -84,7 +84,7 @@ if "query_input" not in st.session_state:
 st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>", unsafe_allow_html=True)
 
-# --- Modellanzeige zuerst ---
+# --- Modellanzeige ---
 model = "llama3-70b-8192"
 st.text_input("Model", value=model, disabled=True)
 
@@ -98,6 +98,9 @@ game_versions = {
 }
 selected_label = st.selectbox("Game version", list(game_versions.keys()))
 selected_variant = game_versions[selected_label]
+
+# Hybrid Retrieval Option
+use_hybrid = st.checkbox("Use Hybrid Retrieval", value=False)
 
 # --- Beispiel-Fragen ---
 examples = [
@@ -133,7 +136,12 @@ def highlight_relevant_sentences(answer: str, context: str) -> str:
 # --- Antwort generieren ---
 if query:
     with st.spinner("Generating answer..."):
-        docs = retrieve(query, top_k=5, variant=selected_variant)
+        if use_hybrid:
+            hybrid_results = retrieve_hybrid(query, top_k=5, variant=selected_variant)
+            docs = [r["chunk"] for r in hybrid_results]
+        else:
+            docs = retrieve(query, top_k=5, variant=selected_variant)
+
         context = "\n\n".join(docs)
 
         prompt = f"""Answer the following question based on the given context.
@@ -156,7 +164,6 @@ if query:
                         "Always prioritize using the rules and context from the currently selected game variant. "
                         "If no matching context is found, you may draw from other Catan rulebooks, "
                         "but make clear that you are referencing a different variant."
-                        "Answer in a Catan-Lover tone"
                     )
                 },
                 {"role": "user", "content": prompt}
@@ -176,3 +183,26 @@ if query:
                 f"font-family: sans-serif; font-size: 0.95rem;'>{highlighted}</div>",
                 unsafe_allow_html=True
             )
+
+        if use_hybrid:
+            with st.expander("Hybrid Retrieval Analysis"):
+                for i, r in enumerate(hybrid_results):
+                    st.markdown(f"**Chunk {i+1}:**")
+                    st.markdown(f"- Hybrid Score: `{r['hybrid_score']:.3f}`")
+                    st.markdown(f"- Dense Score: `{r['dense_score']:.3f}`")
+                    st.markdown(f"- Keyword Score: `{r['keyword_score']:.3f}`")
+                    st.markdown(f"```{r['chunk'][:500]}...```")
+
+        with st.expander("Similarity across all game variants"):
+            st.markdown("This shows how strongly each rule variant matches your question.")
+            similarity_results = retrieve_across_variants(
+                query=query,
+                top_k=3,
+                expected_number=None,
+                preferred_variant=selected_variant
+            )
+            for result in similarity_results:
+                similarity_percent = max(0.0, min(1.0, result.get("similarity", 0.0)))
+                st.write(f"**{result['variant'].replace('_', ' ').title()}** – {round(similarity_percent * 100)}% match")
+                st.progress(similarity_percent)
+                st.markdown(f"```{result['chunk'][:500]}...```")

@@ -16,6 +16,13 @@ def get_variant_path(variant: str) -> Path:
     variant_path.mkdir(parents=True, exist_ok=True)
     return variant_path
 
+def normalize(vectors: np.ndarray) -> np.ndarray:
+    """
+    Normalisiert die Vektoren auf Länge 1 für Cosine Similarity.
+    """
+    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+    return vectors / np.maximum(norms, 1e-10)  # verhindert Division durch 0
+
 def save_faiss_index(
     vectors: np.ndarray,
     metadata: list[str],
@@ -23,16 +30,13 @@ def save_faiss_index(
     dim: int = 384
 ):
     """
-    Speichert den FAISS-Index und die Metadaten für eine Spielvariante.
-    
-    Parameter:
-    - vectors: Die eingebetteten Vektoren (2D-Array)
-    - metadata: Die zugehörigen Texte oder Dokumente
-    - variant: Spielvariante (z. B. "basegame")
-    - dim: Dimension der Embeddings (Standard: 384)
+    Speichert einen FAISS Index mit Cosine Similarity.
     """
     path = get_variant_path(variant)
-    index = faiss.IndexFlatL2(dim)
+    
+    # 🔁 Cosine Similarity = normalisierte L2-Distanz mit innerem Produkt
+    vectors = normalize(vectors).astype("float32")
+    index = faiss.IndexFlatIP(dim)  # Inner Product für Cosine Similarity
     index.add(vectors)
 
     faiss.write_index(index, str(path / "index.faiss"))
@@ -40,15 +44,11 @@ def save_faiss_index(
     with open(path / "metadata.pkl", "wb") as f:
         pickle.dump(metadata, f)
 
-    print(f"✅ FAISS index saved for variant '{variant}'")
+    print(f"✅ Cosine FAISS index saved for variant '{variant}'")
 
 def load_faiss_index(variant: str):
     """
-    Lädt den FAISS-Index und die Metadaten für eine bestimmte Spielvariante.
-    
-    Rückgabe:
-    - FAISS Index
-    - Liste der Metadaten
+    Lädt den FAISS Index mit Cosine Similarity.
     """
     path = get_variant_path(variant)
     index = faiss.read_index(str(path / "index.faiss"))
