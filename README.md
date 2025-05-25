@@ -111,6 +111,82 @@ We use **FAISS** to store precomputed embeddings, enabling fast semantic search 
 
 **Summary:**  
 The current system uses variant-specific vector stores with optional cross-variant similarity analysis, enabling more precise and transparent rule retrieval tailored to the selected game variant.
+---
+# Hybrid Retrieval Enhancement
+
+## Overview
+
+To improve the accuracy and relevance of retrieved rule passages for user queries, we implemented a **Hybrid Retrieval** method that combines:
+
+- **Dense Semantic Similarity** (using FAISS and vector embeddings)
+- **Keyword-Based Matching** (using Jaccard similarity of query and chunk terms)
+
+This approach balances semantic understanding with exact keyword overlap, leading to more precise and contextually relevant retrieval results.
+
+---
+
+## How It Works
+
+### 1. Dense Retrieval (Semantic Similarity)
+
+- Embeds the user query and document chunks using OpenAI’s `text-embedding-ada-002`.
+- Uses FAISS to find chunks closest in vector space.
+- Converts the L2 distance into a similarity score between 0 and 1.
+
+### 2. Sparse Retrieval (Keyword Overlap)
+
+- Extracts terms (words with ≥3 characters) from the query and each chunk.
+- Computes Jaccard similarity (intersection over union) of term sets.
+
+### 3. Hybrid Scoring
+
+- Combines both scores using a weighted sum:
+- HybridScore = α * DenseScore + (1 - α) * KeywordScore
+- Typically, α = 0.8 (80% semantic, 20% keyword)
+
+---
+
+## Benefits
+
+- **Captures semantic relationships** beyond exact word matches.
+- **Mitigates irrelevant matches** by considering keyword presence.
+- **Improves retrieval quality**, especially in a rule-based domain like Catan where keywords matter.
+
+---
+
+## Implementation Details
+
+- The function `retrieve_hybrid(query, top_k, variant, alpha=0.8)` performs this retrieval.
+- Fetches twice as many chunks from FAISS (top_k * 2) for better candidate pool.
+- Returns the top_k chunks ranked by the hybrid score.
+- Each chunk includes:
+- `chunk`: Text snippet
+- `hybrid_score`: Combined score
+- `dense_score`: Semantic similarity component
+- `keyword_score`: Keyword overlap component
+
+---
+
+## Integration
+
+- Integrated into the Streamlit app with a checkbox to toggle hybrid retrieval.
+- When enabled, users see retrieved chunks with detailed scoring for transparency.
+
+---
+
+## Example Scores from Real Queries
+
+| Chunk | Hybrid Score | Dense Score | Keyword Score |
+|-------|--------------|-------------|---------------|
+| 1     | 0.389        | 0.617       | 0.047         |
+| 2     | 0.384        | 0.615       | 0.037         |
+| 3     | 0.376        | 0.600       | 0.039         |
+
+---
+
+## Summary
+
+The hybrid retrieval mechanism significantly enhances the chatbot's ability to deliver accurate, relevant answers across different Catan game variants by leveraging both semantic understanding and keyword precision.
 
 ---
 

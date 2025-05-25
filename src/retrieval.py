@@ -12,16 +12,18 @@ def retrieve(query: str, top_k: int = 5, variant: str = "basegame"):
     D, I = index.search(np.array([query_vec]), top_k)
     return [metadata[i] for i in I[0]]
 
-def retrieve_hybrid(query: str, top_k: int = 5, variant: str = "basegame", alpha: float = 0.8):
+def retrieve_hybrid(query: str, top_k: int = 5, variant: str = "basegame", alpha: float = 0.6, expected_keywords=None):
     """
     Hybrid Retrieval: kombiniert semantische Ähnlichkeit (FAISS) mit Keyword-Score.
     
     alpha ∈ [0, 1]: Gewichtung für dense similarity.
-    (z. B. 0.8 = 80% semantisch, 20% keyword-basiert)
+    (z. B. 0.6 = 60% semantisch, 40% keyword-basiert)
+
+    expected_keywords: Liste oder Menge von Schlüsselwörtern (strings), die bei Treffer den Score boosten.
     """
     index, metadata = load_faiss_index(variant)
     query_vec = embed_texts([query])[0].astype("float32")
-    D, I = index.search(np.array([query_vec]), top_k * 2)  # mehr holen für bessere Mischung
+    D, I = index.search(np.array([query_vec]), top_k * 3)  # mehr Kandidaten für bessere Mischung
 
     query_terms = set(re.findall(r"\b\w{3,}\b", query.lower()))
 
@@ -39,6 +41,10 @@ def retrieve_hybrid(query: str, top_k: int = 5, variant: str = "basegame", alpha
         # Hybrid-Gewichtung
         hybrid_score = alpha * dense_score + (1 - alpha) * keyword_score
 
+        # Bonus wenn eines der erwarteten Keywords im Chunk vorkommt
+        if expected_keywords and any(kw.lower() in chunk.lower() for kw in expected_keywords):
+            hybrid_score += 0.1 
+
         results.append({
             "chunk": chunk,
             "hybrid_score": hybrid_score,
@@ -46,5 +52,6 @@ def retrieve_hybrid(query: str, top_k: int = 5, variant: str = "basegame", alpha
             "keyword_score": keyword_score
         })
 
-    # Top-N nach kombinierten Scores
-    return sorted(results, key=lambda r: -r["hybrid_score"])[:top_k]
+    # Sortieren und Top-k zurückgeben
+    results = sorted(results, key=lambda r: -r["hybrid_score"])[:top_k]
+    return results
