@@ -103,7 +103,7 @@ model = "llama3-70b-8192"
 st.text_input("Model", value=model, disabled=True)
 
 # Input field
-query = st.text_input("Your question", value=st.session_state.query_input, key="query_input")
+query = st.text_input("Your question", key="query_input")
 
 # Answer generation
 if query:
