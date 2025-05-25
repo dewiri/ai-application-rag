@@ -41,9 +41,12 @@ def retrieve_hybrid(query: str, top_k: int = 5, variant: str = "basegame", alpha
         # Hybrid-Gewichtung
         hybrid_score = alpha * dense_score + (1 - alpha) * keyword_score
 
-        # Bonus wenn eines der erwarteten Keywords im Chunk vorkommt
+        # Bonus wenn eines der erwarteten Keywords im Chunk vorkommt (Groß-/Kleinschreibung ignorieren)
         if expected_keywords and any(kw.lower() in chunk.lower() for kw in expected_keywords):
             hybrid_score += 0.1 
+
+        # Score cap bei 1.0
+        hybrid_score = min(hybrid_score, 1.0)
 
         results.append({
             "chunk": chunk,
