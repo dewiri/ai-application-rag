@@ -1,0 +1,242 @@
+[
+  {
+    "question": "How many victory points do you need to win the game?",
+    "expected_keyword": "10",
+    "answer": "you need 10 victory points to win the game.",
+    "matched": true
+  },
+  {
+    "question": "Can I build a settlement next to another player's settlement?",
+    "expected_keyword": "distance",
+    "answer": "no, you cannot build a settlement next to another player's settlement. this is due to the distance rule, which states that the nearest settlement must be at least two intersections away from the intersection where you want to build a new settlement.",
+    "matched": true
+  },
+  {
+    "question": "What happens when a 7 is rolled?",
+    "expected_keyword": "robber",
+    "answer": "when a \"7\" is rolled, there is no robber in this scenario. if you have more than 7 resources in your hand, you lose half of them, as usual. then, the player who rolled the \"7\" can steal a card from any of the other players.",
+    "matched": true
+  },
+  {
+    "question": "Can I trade development cards?",
+    "expected_keyword": "no",
+    "answer": "no, you cannot trade development cards. according to the rules, \"you cannot trade or give away development cards.\"",
+    "matched": true
+  },
+  {
+    "question": "How many roads can I build?",
+    "expected_keyword": "15",
+    "answer": "according to the rules of catan, only 1 road can be built on any given path.",
+    "matched": false
+  },
+  {
+    "question": "What is needed to build a city?",
+    "expected_keyword": "ore",
+    "answer": "according to the rules, you need 3 ore and 2 grain to build a city. additionally, you can only establish a city by upgrading one of your existing settlements.",
+    "matched": true
+  },
+  {
+    "question": "How do harbors work?",
+    "expected_keyword": "trade",
+    "answer": "according to the text, harbors allow you to trade resources more favorably. in order to control a harbor, you must build a settlement on a coastal intersection which borders the harbor. settlements and cities at harbors provide \"harbor points.\" the player with the most harbor points receives 2 special victory points.",
+    "matched": true
+  },
+  {
+    "question": "What do knights do in Cities and Knights?",
+    "expected_keyword": "barbarian",
+    "answer": "according to the provided context, knights in cities and knights:\n\n* are represented by round wooden tokens with two sides (active and inactive)\n* may be placed at the intersection of three hexes, like settlements\n* can be moved across sea hexes if roads and ships connect the intersections\n* must always be connected to a settlement or city of its color\n* can be used to chase away the pirate (or robber)\n* may perform actions on the turn after they are activated\n* cannot be traded with other players, nor can they be stolen by the robber\n\nit's also important to note that knights are essential for achieving victory in cities and knights, as they help protect cities from barbarian attacks.",
+    "matched": true
+  },
+  {
+    "question": "Can I use a knight on the same turn I build it?",
+    "expected_keyword": "activate",
+    "answer": "no, you cannot use a knight on the same turn you build it. according to the rules, \"a knight may be activated on the same turn it was built; however, the knight may not perform an action on that same turn.\" this means you can activate the knight on the same turn you build it, but it cannot take an action until the next turn.",
+    "matched": true
+  },
+  {
+    "question": "How many cards must I discard on a 7?",
+    "expected_keyword": "more than 7",
+    "answer": "according to the text, if you have more than 7 resource cards when a \"7\" is rolled, you must discard half of your cards, rounded down, just like in base catan.",
+    "matched": true
+  },
+  {
+    "question": "How do I win in Seafarers?",
+    "expected_keyword": "points",
+    "answer": "to win in seafarers, you need to have the most victory points at the end of the game. the normal rules for catan apply, and you win when you have 11 or more victory points during your turn. additionally, some scenarios offer special victory points, such as the \"harbormaster\" scenario, where the player with the most \"harbor points\" receives 2 special victory points.",
+    "matched": true
+  },
+  {
+    "question": "Can I build two roads in a single turn?",
+    "expected_keyword": "yes",
+    "answer": "according to the rules, normally you can only build one road in a turn. however, if you play the \"road building\" development card, you have the option to build 2 roads, 2 ships, or 1 ship and 1 road. so, under certain circumstances, yes, you can build two roads in a single turn.",
+    "matched": true
+  },
+  {
+    "question": "Can I build on a coastal intersection?",
+    "expected_keyword": "yes",
+    "answer": "yes, you can build on a coastal intersection.",
+    "matched": true
+  },
+  {
+    "question": "What happens if I run out of settlements?",
+    "expected_keyword": "limit",
+    "answer": "according to the rules, if you run out of settlements, you can still build one by returning a city to your settlement pile. this is stated in the \"each player has a supply of 15 roads, 5 settlements, and 4 cities. if you build a city, return the settlement to your supply.\" \n\nso, in essence, running out of settlements is not a game-stopping event, as you can always retrieve one by downgrading a city back to a settlement.",
+    "matched": false
+  },
+  {
+    "question": "How many knights can I have active?",
+    "expected_keyword": "unlimited",
+    "answer": "according to the rules, there is no explicit limit to the number of active knights you can have. each knight can be activated and perform one action during your turn.",
+    "matched": false
+  },
+  {
+    "question": "What are progress cards?",
+    "expected_keyword": "development",
+    "answer": "according to the context, progress cards are a type of development card. they have green frames. there are 2 each of 3 varieties: road building, year of plenty, and monopoly.",
+    "matched": true
+  },
+  {
+    "question": "Can I upgrade a city?",
+    "expected_keyword": "no",
+    "answer": "according to the rules of catan, you cannot build a city directly. you can only upgrade an existing settlement to a city. you pay the required resources, return the settlement to your supply, and replace the settlement with a city on the same intersection.",
+    "matched": true
+  },
+  {
+    "question": "What is the Longest Road?",
+    "expected_keyword": "5",
+    "answer": "according to the rules, the longest road is a special card that is awarded to the first player to build a continuous road of at least 5 individual road pieces. this card is worth 2 victory points. if another player builds a longer road, they take the longest road and the 2 bonus victory points, creating a 4-point swing.",
+    "matched": true
+  },
+  {
+    "question": "Can I trade during another player's turn?",
+    "expected_keyword": "yes",
+    "answer": "no, you cannot trade during another player's turn. according to the rules, \"important: players may only trade with the player whose turn it is. the other players may not trade among themselves.\" this means that trades can only occur during your own turn, and not during another player's turn.",
+    "matched": false
+  },
+  {
+    "question": "What is the Largest Army?",
+    "expected_keyword": "3",
+    "answer": "according to the given rules, the largest army is the player who has the highest total value of active knights. in the base game, each player with the most knight cards (not necessarily active) initially holds the largest army card. however, in the cities and knights (c&k) expansion, the largest army is determined by the total value of active knights, not just the number of knight cards.",
+    "matched": false
+  },
+  {
+    "question": "Do city walls protect from discarding?",
+    "expected_keyword": "yes",
+    "answer": "according to the rules, city walls do protect from discarding. specifically, it says: \"each city wall you control increases the maximum number of cards you safely hold in your hand when a \u201c7\u201d is rolled on the production dice. each city wall adds 2 cards to this limit.\"\n\nso, if you have city walls, you can safely hold more cards in your hand without having to discard half of them when a \"7\" is rolled.",
+    "matched": false
+  },
+  {
+    "question": "How do I build a ship?",
+    "expected_keyword": "wool",
+    "answer": "to build a ship, you need to expend 1 wool resource (to make sails) and 1 lumber resource (to build hulls and masts). then, place the ship on a sea route directly adjacent to one of your harbor settlements, following these conditions:\n\n* you cannot place a ship on a sea route adjacent to an undiscovered hex, as it would immediately result in the discovery of this hex.\n* if you want to build a new ship when all your ships are already on the game board, you may remove any 1 of your ships from the game board and build the new ship adjacent to one of your harbor settlements for the usual ship-building costs (1 lumber + 1 wool). any pieces in the hold of a ship you remove are lost (return them to your supply).\n\nyou can place a new ship adjacent to any settlement or city you have already built on the coast. alternatively, you can place your new ship adjacent to any of your other ships that are already on the board, allowing for any amount of branching, just like when you build roads.",
+    "matched": true
+  },
+  {
+    "question": "Can I move ships?",
+    "expected_keyword": "yes",
+    "answer": "according to the rules, you can move ships during your movement phase. each of your ships has 4 movement points. moving a ship from a sea route to an adjacent sea route costs 1 movement point. you may move a ship in any direction and also change directions during its movement.",
+    "matched": false
+  },
+  {
+    "question": "How many players can play with Seafarers 5-6?",
+    "expected_keyword": "6",
+    "answer": "according to the context, seafarers 5-6 can be played with 5-6 players.",
+    "matched": true
+  },
+  {
+    "question": "What do commodities do?",
+    "expected_keyword": "build",
+    "answer": "according to the provided context, commodities (cloth, coin, and paper) have the following effects:\n\n* they are produced only by cities, and only in forest, pasture, and mountains.\n* they are added to your resource cards and count towards the robber or limit.\n* they may be stolen by the robber or lost as a discard.\n* they can be traded in all the same ways as resources.\n* they are needed to acquire city improvements.\n* they can be affected by certain progress cards that specifically mention \"commodities\".\n* they can be used to make 2:1 trades with the supply during the turn that you play certain progress cards.\n* they can be given to another player when a \"trade monopoly\" progress card is played.",
+    "matched": false
+  },
+  {
+    "question": "Can I trade with the bank?",
+    "expected_keyword": "4:1",
+    "answer": "according to the rules, no, you cannot trade with the bank. the rules mention that you can trade gold for resource cards with other players (and vice versa). this implies that trades are only possible between players, not with the bank.",
+    "matched": false
+  },
+  {
+    "question": "What is a harbor master?",
+    "expected_keyword": "points",
+    "answer": "according to the scenario, the harbormaster is the title given to the player with the most harbor points. this player receives 2 special victory points.",
+    "matched": true
+  },
+  {
+    "question": "Can I place a knight on a ship?",
+    "expected_keyword": "no",
+    "answer": "no, you cannot place a new knight on a ship. however, you can move a knight to an intersection of sea hexes if you have a line of ships that connects the intersection the knight starts from to the intersection it is moved to.",
+    "matched": true
+  },
+  {
+    "question": "Can I build a road on water?",
+    "expected_keyword": "no",
+    "answer": "no, you cannot build a road on water. according to the rules, you can build a bridge on a building site for a bridge, which is a path that crosses a river, and it's treated as if it were a road for the longest road and settlement building. however, you cannot build a road on water.",
+    "matched": true
+  },
+  {
+    "question": "What is the barbarian attack?",
+    "expected_keyword": "city",
+    "answer": "the barbarian attack is a mechanic that occurs each time a player builds a settlement or upgrades a settlement to a city. when a barbarian attack occurs, the player must immediately interrupt their turn and resolve the attack. this involves rolling the dice to place barbarians on coastal hexes, potentially blocking resource production and threatening settlements and cities.",
+    "matched": true
+  },
+  {
+    "question": "How do I get progress cards?",
+    "expected_keyword": "city",
+    "answer": "according to the rules, to get a progress card, you must meet the following conditions:\n\n1. you must possess at least one level of city improvement in one or more areas of development. the first level of improvement displays two red dice, the second level displays three, and so on.\n2. the event die, when rolled on any player's turn, must show the city gate symbol that matches the color of one of your city improvements.\n3. the number on the red die, rolled at the same time, must match one of the red dice displayed on your city improvement matching the color of the city gate on the event die.\n\nif these three conditions are met, you may draw the top card from the progress card stack that matches the color of the city gate on the event die.",
+    "matched": true
+  },
+  {
+    "question": "Can I play more than one knight?",
+    "expected_keyword": "yes",
+    "answer": "according to the rules, there is no specific limit on the number of knights a player can have. however, there are some limitations to consider:\n\n1. to \"hire\" a knight, you must pay one wool and one ore to the bank. this allows you to take a basic knight and place it on the board.\n2. you can only place a knight on an intersection connected to your roads.\n3. you can only activate a knight during your turn, and an activated knight cannot perform any actions on the turn it is activated.\n4. a knight can only perform one action per turn.\n\nwhile there is no explicit limit on the number of knights, the practical limitations and costs associated with hiring and activating knights will likely influence the number of knights you can effectively utilize during the game.",
+    "matched": false
+  },
+  {
+    "question": "What is the max number of cities?",
+    "expected_keyword": "4",
+    "answer": "according to the context, the maximum number of cities a player can have is 5, since a player only has 5 settlements and can upgrade each settlement to a city.",
+    "matched": false
+  },
+  {
+    "question": "Can I place a city without a settlement?",
+    "expected_keyword": "no",
+    "answer": "no, you cannot place a city without a settlement. according to the rules, \"you may only establish a city by upgrading one of your settlements.\" this means that you must first have a settlement in place, and then you can upgrade it to a city by paying the required resources and replacing the settlement with a city piece.",
+    "matched": true
+  },
+  {
+    "question": "How many cards to build a settlement?",
+    "expected_keyword": "4",
+    "answer": "according to the context, building a settlement requires specific resources, which are shown on the building costs cards. however, the exact number of cards required to build a settlement is not explicitly stated.\n\nin the standard catan game, building a settlement typically requires 1 brick and 1 sheep card. however, this specific scenario might have modified rules or requirements, which are not clear from the provided context.\n\ntherefore, i would say that the answer is \"unknown\" or \"dependent on the scenario/rules.\"",
+    "matched": false
+  },
+  {
+    "question": "Can I build two cities next to each other?",
+    "expected_keyword": "no",
+    "answer": "no, you cannot build two cities next to each other. you can only upgrade an existing settlement to a city.",
+    "matched": true
+  },
+  {
+    "question": "Do ships count towards Longest Road?",
+    "expected_keyword": "yes",
+    "answer": "no, ships do not count towards the longest road. however, they do count towards the longest trade route.",
+    "matched": false
+  },
+  {
+    "question": "What is a gold field?",
+    "expected_keyword": "any",
+    "answer": "according to the rules, a gold field is a region rich in gold nuggets, represented by gold field hexes.",
+    "matched": false
+  },
+  {
+    "question": "Can I lose a city?",
+    "expected_keyword": "barbarian",
+    "answer": "according to the rules, yes, you can lose a city. if the barbarians attack and you have the fewest or next fewest cities, you may lose one of your cities. however, you will keep any city improvements you had built before the attack, and you can continue to draw and play progress cards normally. you can rebuild a city once you own a settlement again.",
+    "matched": true
+  },
+  {
+    "question": "How many trade routes can I control?",
+    "expected_keyword": "unlimited",
+    "answer": "according to the rules, you can control multiple trade routes, but only the longest continuous line of roads and/or ships is counted as the \"longest trade route\" and is worth 2 victory points. you can have multiple open or closed shipping routes, but you can only count the single longest branch of a road and/or shipping route to calculate the longest trade route.",
+    "matched": false
+  }
+]

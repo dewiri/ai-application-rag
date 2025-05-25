@@ -1,25 +1,25 @@
 import sys
 import os
 import base64
+import re
 import streamlit as st
 
-# Add parent directory to path
+# Pfad-Anpassung
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from src.retrieval import retrieve
 from src.api_client import client
 
-# Page setup
+# --- Streamlit Setup ---
 st.set_page_config(page_title="Catan Rule Expert", page_icon="🎲")
 
-# Background image
+# Hintergrundbild laden
 def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
 bg_image = get_base64_image("streamlit_app/assets/catan_bg.jpg")
 
-# Custom styling
+# Styling
 st.markdown(
     f"""
     <style>
@@ -61,36 +61,51 @@ st.markdown(
         font-size: 0.9rem !important;
         border-radius: 6px !important;
         width: fit-content;
-        margin: 0 auto;  /* ✅ zentriert den Button horizontal */
-        display: block;  /* ✅ nötig für zentrierung mit margin */
+        margin: 0 auto;
+        display: block;
     }}
     .stButton > button:hover {{
         background-color: rgba(255,255,255,0.15) !important;
+    }}
+    mark {{
+        background-color: #ffff66;
+        font-weight: 600;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Session state
+# --- Session State Initialisieren ---
 if "query_input" not in st.session_state:
     st.session_state.query_input = ""
 
-# Title and subtitle
+# --- Header ---
 st.markdown("<h1 style='text-align: center;'>Catan Rule Chatbot</h1>", unsafe_allow_html=True)
-st.markdown(
-    "<p style='text-align: center; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>",
-    unsafe_allow_html=True
-)
+st.markdown("<p style='text-align: center; font-size: 1.1rem;'>Ask any question about the rules of Catan (including expansions).</p>", unsafe_allow_html=True)
 
-# Example questions
+# --- Modellanzeige zuerst ---
+model = "llama3-70b-8192"
+st.text_input("Model", value=model, disabled=True)
+
+# --- Spielvariante auswählen ---
+game_versions = {
+    "Base Game": "basegame",
+    "Seafarers": "seafarers",
+    "Cities & Knights": "cities_knights",
+    "Traders & Barbarians": "traders_barbarians",
+    "Explorers & Pirates": "explorers_pirates"
+}
+selected_label = st.selectbox("Game version", list(game_versions.keys()))
+selected_variant = game_versions[selected_label]
+
+# --- Beispiel-Fragen ---
 examples = [
     "Can I build a settlement directly next to another one?",
     "What happens if I roll a 7 and have too many cards?",
-    "How do knights work in Cities & Knights?"
+    "What do I need to build a city?"
 ]
 
-# Display example buttons centered
 st.markdown("<div class='example-header'>Example sentences:</div>", unsafe_allow_html=True)
 st.markdown("<div class='example-container'>", unsafe_allow_html=True)
 for idx, example in enumerate(examples):
@@ -98,17 +113,27 @@ for idx, example in enumerate(examples):
         st.session_state.query_input = example
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Fixed model display
-model = "llama3-70b-8192"
-st.text_input("Model", value=model, disabled=True)
-
-# Input field
+# --- Eingabe ---
 query = st.text_input("Your question", key="query_input")
 
-# Answer generation
+# --- Markierungsfunktion ---
+def highlight_relevant_sentences(answer: str, context: str) -> str:
+    context_sentences = re.split(r'(?<=[.!?])\s+', context)
+    answer_keywords = set(re.findall(r'\b\w{5,}\b', answer.lower()))
+    highlighted = []
+    for sentence in context_sentences:
+        lowered = sentence.lower()
+        overlap = sum(1 for word in answer_keywords if word in lowered)
+        if overlap >= 2:
+            highlighted.append(f"<mark>{sentence.strip()}</mark>")
+        else:
+            highlighted.append(sentence.strip())
+    return "<br>".join(highlighted)
+
+# --- Antwort generieren ---
 if query:
     with st.spinner("Generating answer..."):
-        docs = retrieve(query, top_k=5)
+        docs = retrieve(query, top_k=5, variant=selected_variant)
         context = "\n\n".join(docs)
 
         prompt = f"""Answer the following question based on the given context.
@@ -124,7 +149,16 @@ if query:
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": "You are a helpful expert on the rules of Catan."},
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a helpful expert on the rules of Catan. "
+                        "Always prioritize using the rules and context from the currently selected game variant. "
+                        "If no matching context is found, you may draw from other Catan rulebooks, "
+                        "but make clear that you are referencing a different variant."
+                        "Answer in a Catan-Lover tone"
+                    )
+                },
                 {"role": "user", "content": prompt}
             ]
         )
@@ -135,9 +169,10 @@ if query:
         st.write(answer)
 
         with st.expander("Show retrieved context"):
+            highlighted = highlight_relevant_sentences(answer, context)
             st.markdown(
                 f"<div style='background-color: rgba(0, 0, 0, 0.05); "
                 f"padding: 1rem; border-radius: 8px; color: #111111; "
-                f"font-family: sans-serif; font-size: 0.95rem;'>{context.replace(chr(10), '<br>')}</div>",
+                f"font-family: sans-serif; font-size: 0.95rem;'>{highlighted}</div>",
                 unsafe_allow_html=True
             )

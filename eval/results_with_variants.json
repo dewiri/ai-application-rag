@@ -1,0 +1,282 @@
+[
+  {
+    "question": "How many victory points do you need to win the game?",
+    "variant": "basegame",
+    "expected_keyword": "10",
+    "answer": "according to the rules, since each player begins the game with 2 victory points, you only need 8 more victory points to win the game. however, the rules also explicitly state that \"the first player to reach (be at) 10 victory points (vps) on their turn wins the game.\" so, the answer is 10 victory points.",
+    "matched": true
+  },
+  {
+    "question": "Can I build a settlement next to another player's settlement?",
+    "variant": "basegame",
+    "expected_keyword": "distance",
+    "answer": "no, you cannot build a settlement next to another player's settlement. according to the distance rule, you can only build a new settlement on an unoccupied intersection if the nearest settlement (yours or another player's) is at least two intersections away.",
+    "matched": true
+  },
+  {
+    "question": "What happens when a 7 is rolled?",
+    "variant": "basegame",
+    "expected_keyword": "robber",
+    "answer": "when a 7 is rolled, none of the players receive resources. instead:\n\n(1) each player counts their resource cards. any player with more than 7 resource cards (i.e., 8 or more) must choose and discard half of them. return discards to the supply stacks. if you hold an odd number of cards, round down (e.g., if you have 9 resource cards, you discard 4).\n\nadditionally, the robber is moved, and the player who rolled the 7 may also take 1 resource card at random from one of the players who own settlements adjacent to the target terrain hex.",
+    "matched": true
+  },
+  {
+    "question": "Can I trade development cards?",
+    "variant": "basegame",
+    "expected_keyword": "no",
+    "answer": "no, you may not trade development cards. according to the rules, \"you cannot trade or give away development cards.\"",
+    "matched": true
+  },
+  {
+    "question": "How many roads can I build?",
+    "variant": "basegame",
+    "expected_keyword": "15",
+    "answer": "you have a supply of 15 roads, and once built, roads remain on the board until the end of the game.",
+    "matched": true
+  },
+  {
+    "question": "What is needed to build a city?",
+    "variant": "basegame",
+    "expected_keyword": "ore",
+    "answer": "to build a city, you need 3 ore and 2 grain.",
+    "matched": true
+  },
+  {
+    "question": "How do harbors work?",
+    "variant": "seafarers",
+    "expected_keyword": "trade",
+    "answer": "according to the rules of seafarers, harbors can be obtained by building or moving a ship on an edge next to a harbor. once a harbor is obtained, you must place it on an adjacent edge to a coastal settlement. harbors cannot occupy adjacent or the same edges. if you don't have a coastal settlement, you can set the harbor aside until you build one. \n\nwhen you place a harbor, you can use it immediately, even during the same turn. harbors are used for trading resources. the type of harbor determines the trade ratio. for example, a special 2:1 harbor allows you to trade one resource for two of another resource.",
+    "matched": true
+  },
+  {
+    "question": "What do knights do in Cities and Knights?",
+    "variant": "cities_knights",
+    "expected_keyword": "barbarian",
+    "answer": "according to the given context, knights in cities and knights are essential for achieving victory. they are represented by round wooden tokens, and each token has an active and an inactive side. an inactive knight cannot perform any actions. knights can be moved across sea hexes if roads and ships connect the intersection they start from to the intersection they are moved to. they can also be used to chase away the pirate. additionally, when a knight is activated, it may not perform any actions on the turn that it has been activated, but it can perform actions with the knight during the controlling player's next turn.",
+    "matched": false
+  },
+  {
+    "question": "Can I use a knight on the same turn I build it?",
+    "variant": "cities_knights",
+    "expected_keyword": "activate",
+    "answer": "no, you may not use a knight on the same turn you build it. according to the rules, \"a knight may be activated on the same turn it was built; however, the knight may not perform an action on that same turn.\" this means that you can activate the knight on the same turn, but it cannot perform an action until your next turn.",
+    "matched": true
+  },
+  {
+    "question": "How many cards must I discard on a 7?",
+    "variant": "basegame",
+    "expected_keyword": "more than 7",
+    "answer": "according to the rules, when a \"7\" is rolled, every player who has more than 7 resource cards must select half (rounded down) of their resource cards and return them to the bank.",
+    "matched": true
+  },
+  {
+    "question": "How do I win in Seafarers?",
+    "variant": "seafarers",
+    "expected_keyword": "points",
+    "answer": "the thrill of victory! in seafarers, the game ends when one player achieves 10 victory points. you can earn victory points by:\n\n1. building settlements, cities, and roads on the islands, just like in the original catan.\n2. collecting special victory point tokens, which are awarded for achieving specific goals or completing certain tasks, as described in the scenario's additional rules section.\n3. building a settlement or city on a terrain hex with a gold field, which is worth an additional victory point.\n\nthe player with the most victory points at the end of the game wins!",
+    "matched": true
+  },
+  {
+    "question": "Can I build two roads in a single turn?",
+    "variant": "basegame",
+    "expected_keyword": "yes",
+    "answer": "no, you cannot build two roads in a single turn. according to the rules, \"your turn is over after 'building'...\" this implies that you can only build one road (or settlement, or city, etc.) per turn.",
+    "matched": false
+  },
+  {
+    "question": "Can I build on a coastal intersection?",
+    "variant": "seafarers",
+    "expected_keyword": "yes",
+    "answer": "according to the seafarers rules, you can build a settlement on a coastal intersection, and when you do, you may place a ship adjacent to the settlement), instead of a road.",
+    "matched": false
+  },
+  {
+    "question": "What happens if I run out of settlements?",
+    "variant": "basegame",
+    "expected_keyword": "limit",
+    "answer": "according to the base game variant, if you build a city, you return the settlement to your supply. this means that even if you've built all 5 of your settlements, you can still \"recycle\" them by upgrading to cities, and then reusing the settlement piece. so, in essence, you can never truly \"run out\" as long as you have cities to build.",
+    "matched": false
+  },
+  {
+    "question": "How many knights can I have active?",
+    "variant": "cities_knights",
+    "expected_keyword": "unlimited",
+    "answer": "the rules don't explicitly state a limit to the number of active knights you can have. however, it's implied that you can have multiple active knights, as the rules mention that \"each active knight can perform one action during your turn\" and \"you may promote up to 2 of your knights for free\" (smith and road building cards). therefore, the answer is: you can have multiple active knights.",
+    "matched": false
+  },
+  {
+    "question": "What are progress cards?",
+    "variant": "basegame",
+    "expected_keyword": "development",
+    "answer": "progress cards are a type of development card. they have green frames and there are 2 each of 3 varieties: road building, year of plenty, and monopoly.",
+    "matched": true
+  },
+  {
+    "question": "Can I upgrade a city?",
+    "variant": "basegame",
+    "expected_keyword": "no",
+    "answer": "no, you cannot upgrade a city. according to the rules, you can only upgrade a settlement to a city, not upgrade a city further.",
+    "matched": true
+  },
+  {
+    "question": "What is the Longest Road?",
+    "variant": "basegame",
+    "expected_keyword": "5",
+    "answer": "according to the rulebook, the longest road is a special card that is awarded to the first player to build a continuous road of at least 5 individual road pieces. it is worth 2 victory points, and if another player builds a longer road, they immediately take the longest road card and its 2 victory points, causing a 4-point swing.",
+    "matched": true
+  },
+  {
+    "question": "Can I trade during another player's turn?",
+    "variant": "basegame",
+    "expected_keyword": "yes",
+    "answer": "no, you cannot trade during another player's turn. according to the context, \"important: players may only trade with the player whose turn it is. the other players may not trade among themselves.\" additionally, it is stated that \"while it is your turn, you must be a part of all trades, and the other players may not trade among themselves.\" this clearly indicates that trading can only occur during your own turn, and not during another player's turn.",
+    "matched": false
+  },
+  {
+    "question": "What is the Largest Army?",
+    "variant": "basegame",
+    "expected_keyword": "3",
+    "answer": "according to the context, the largest army is worth 2 victory points, and it is given to the player who plays 3 knight cards first. if another player plays more knight cards, they take this card.",
+    "matched": true
+  },
+  {
+    "question": "Do city walls protect from discarding?",
+    "variant": "cities_knights",
+    "expected_keyword": "yes",
+    "answer": "yes, city walls do protect from discarding. each city wall you control increases the maximum number of cards you safely hold in your hand when a \u201c7\u201d is rolled on the production dice. each city wall adds 2 cards to this limit.",
+    "matched": true
+  },
+  {
+    "question": "How do I build a ship?",
+    "variant": "seafarers",
+    "expected_keyword": "wool",
+    "answer": "to build a ship, you need to expend 1 wool resource (to make sails) and 1 lumber resource (to build hulls and masts). ships can only be placed on the boundary (hex side) between two hexes. you may only build ships between two sea hexes (forming an aquatic route) or between a sea hex and a land hex (a coastal route).",
+    "matched": true
+  },
+  {
+    "question": "Can I move ships?",
+    "variant": "seafarers",
+    "expected_keyword": "yes",
+    "answer": "yes, you can move ships, but with certain restrictions. according to the rules of seafarers, you may only move one ship per turn, and only during your building phase. additionally, you may not move a ship on the same turn you originally built it. furthermore, when you move a ship, you must obey all of the usual rules for placing a new ship, including the rule that you may only move a ship where one of its two ends is not adjacent to any of your other pieces.",
+    "matched": true
+  },
+  {
+    "question": "How many players can play with Seafarers 5-6?",
+    "variant": "seafarers",
+    "expected_keyword": "6",
+    "answer": "the answer is: 5-6 players.",
+    "matched": true
+  },
+  {
+    "question": "What do commodities do?",
+    "variant": "cities_knights",
+    "expected_keyword": "build",
+    "answer": "according to the rules of cities & knights, commodities:\n\n* are produced by cities in forest, pasture, and mountains\n* are added to your hand of resource cards\n* count towards the robber or limit when a \"7\" is rolled\n* can be stolen by the robber, or lost as a discard\n* can be traded in all the same ways as resources\n* are needed to acquire city improvements\n* can be specifically affected by certain progress cards\n\nin short, commodities are a new type of material that is similar to resources but with some distinct characteristics.",
+    "matched": false
+  },
+  {
+    "question": "Can I trade with the bank?",
+    "variant": "basegame",
+    "expected_keyword": "4:1",
+    "answer": "yes, you can trade with the bank through maritime trade. during your turn, you can trade resources with the bank) at a 4:1 ratio or, if you have a settlement or city on a harbor, at a 3:1 or 2:1 ratio.",
+    "matched": true
+  },
+  {
+    "question": "What is a harbor master?",
+    "variant": "seafarers",
+    "expected_keyword": "points",
+    "answer": "there is no mention of a \"harbor master\" in the provided context. the rules only explain how to place and use harbors, but do not introduce a concept of a \"harbor master\".",
+    "matched": false
+  },
+  {
+    "question": "Can I place a knight on a ship?",
+    "variant": "cities_knights",
+    "expected_keyword": "no",
+    "answer": "no, you cannot place a new knight on a ship. however, you can move a knight to an intersection of sea hexes (but not place a new knight there) if you have a line of ships to that intersection. the knight is considered to be on the adjacent ship.",
+    "matched": true
+  },
+  {
+    "question": "Can I build a road on water?",
+    "variant": "seafarers",
+    "expected_keyword": "no",
+    "answer": "no, according to the rules of seafarers, roads can only be placed on the boundary (hex side) between two hexes, and unlike ships, roads cannot be placed between two sea hexes. roads can only be built on land.",
+    "matched": true
+  },
+  {
+    "question": "What is the barbarian attack?",
+    "variant": "cities_knights",
+    "expected_keyword": "city",
+    "answer": "when the barbarian ship reaches the red-circled space that depicts barbarians landing on the shore, the barbarians attack catan!",
+    "matched": false
+  },
+  {
+    "question": "How do I get progress cards?",
+    "variant": "cities_knights",
+    "expected_keyword": "city",
+    "answer": "to get progress cards, you must meet the following conditions:\n\n1. you must possess at least one level of city improvement in one or more areas of development.\n2. the event die, when rolled on any player's turn, must show the city gate symbol that matches the color of one of your city improvements.\n3. the number on the red die, rolled at the same time, must match one of the red dice displayed on your city improvement matching the color of the city gate on the symbol die.\n\nif these three conditions are met, you may draw the top card from the progress card stack that matches the color of the city gate on the event die.",
+    "matched": true
+  },
+  {
+    "question": "Can I play more than one knight?",
+    "variant": "cities_knights",
+    "expected_keyword": "yes",
+    "answer": "according to the cities & knights variant rules, there is no restriction on the number of knights you can have active or inactive on the board. you can place new knights by \"hiring\" them, displacing opponent's knights, or using special abilities like the diplomat or displacing a knight. \n\nhowever, each knight may only perform one action per turn, and a knight cannot be activated and perform an action on the same turn.",
+    "matched": false
+  },
+  {
+    "question": "What is the max number of cities?",
+    "variant": "basegame",
+    "expected_keyword": "4",
+    "answer": "according to the rules, each player has 5 settlements and 4 cities. when you build a city, you return the settlement to your supply. this means you can upgrade all 5 settlements to cities, and then you'll have a maximum of 5 cities.",
+    "matched": true
+  },
+  {
+    "question": "Can I place a city without a settlement?",
+    "variant": "basegame",
+    "expected_keyword": "no",
+    "answer": "no, you cannot place a city without a settlement. according to the rules, \"you can only establish a city by upgrading one of your settlements.\"",
+    "matched": true
+  },
+  {
+    "question": "How many cards to build a settlement?",
+    "variant": "basegame",
+    "expected_keyword": "4",
+    "answer": "according to the building costs cards, a settlement requires 1 brick and 1 sheep to build. therefore, the answer is 2 resource cards.",
+    "matched": false
+  },
+  {
+    "question": "Can I build two cities next to each other?",
+    "variant": "basegame",
+    "expected_keyword": "no",
+    "answer": "no, you cannot build two cities next to each other. according to the \"distance rule\" (emphasis yours), you may only build a settlement (and by extension, a city at an intersection if all 3 of the adjacent intersections are vacant. since a city is built by upgrading a settlement, you cannot build a city next to another city.",
+    "matched": true
+  },
+  {
+    "question": "Do ships count towards Longest Road?",
+    "variant": "seafarers",
+    "expected_keyword": "yes",
+    "answer": "no, ships do not count towards the \"longest road\". in seafarers, the concept of the \"longest road\" has been replaced by the \"longest trade route\", which considers both roads and shipping routes (open or closed) to determine who controls the longest continuous line of roads and/or ships.",
+    "matched": false
+  },
+  {
+    "question": "What is a gold field?",
+    "variant": "explorers_pirates",
+    "expected_keyword": "any",
+    "answer": "according to the rules of explorers & pirates, a gold field is a type of terrain that is occupied by a pirate lair token. when a player discovers a gold field, they receive 2 gold, and a pirate lair token is placed on the gold field, making it a pirate lair hex. the gold field also has a number, and when that number is rolled during production, players with settlements or harbor settlements on the corresponding intersections receive 2 gold each.",
+    "matched": false
+  },
+  {
+    "question": "Can I lose a city?",
+    "variant": "cities_knights",
+    "expected_keyword": "barbarian",
+    "answer": "according to the rules, yes, you can lose a city if the barbarians are stronger than the defending knights. the barbarians will pillage one or more cities, reducing it to a settlement. you will lose a city if you have the lowest total strength of active knights among the players who have cities (not metropolises or settlements only).",
+    "matched": true
+  },
+  {
+    "question": "How many trade routes can I control?",
+    "variant": "seafarers",
+    "expected_keyword": "unlimited",
+    "answer": "according to the rules of seafarers, you can control only one longest trade route. it's a special card and it's worth 2 victory points.",
+    "matched": false
+  }
+]

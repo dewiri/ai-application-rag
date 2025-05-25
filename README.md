@@ -45,9 +45,10 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 ### Method Used
 
-| Type                          | Configuration                         |
-|-------------------------------|----------------------------------------|
-| RecursiveCharacterTextSplitter | 1000 characters, 100 character overlap |
+| Version | Type                          | Configuration                         | Description                                                                 |
+|---------|-------------------------------|----------------------------------------|-----------------------------------------------------------------------------|
+| 1       | Character-based               | Fixed size only                        | Naive splitting into chunks of fixed length without regard to semantics.   |
+| 2       | RecursiveCharacterTextSplitter | 1000 characters, 100 character overlap | Splits on paragraphs/sentences first (`\n\n`, `\n`, `.`, `!`, `?`, etc.), leading to more natural chunks. |
 
 
 ---
@@ -82,6 +83,57 @@ The system retrieves relevant rule passages and uses a language model to generat
 ## Environment
 
 Environment variables managed with `python-dotenv`:
+
+
+## Evaluation & Testing
+
+The chatbot was evaluated in two distinct stages:
+
+---
+
+### 1. Initial Evaluation (Single Vectorstore)
+
+#### 🔍 Method A: Keyword-Based Scoring (LLaMA 3 via Groq)
+
+- **Dataset:** 40 real Catan-related questions
+- **Approach:** Check if expected keyword appears in the model output
+- **Result:**  
+  25 out of 40 matched  
+  → **Accuracy: 62.5%**
+
+#### 🔍 Method B: Manual Review (GPT-4o)
+
+- **Approach:** Human-reviewed for overall correctness
+- **Results:**
+
+| Evaluation         | Count | Description                                  |
+|--------------------|-------|----------------------------------------------|
+| Correct          | 31    | Fully or mostly accurate responses           |
+| Partially correct | 6     | Incomplete or slightly misleading            |
+| Incorrect        | 3     | Factually wrong or unclear                   |
+
+> **Conclusion:** Quality-based review reveals ~78% effective accuracy, better than the keyword-only method.
+
+---
+
+### 2. Updated Evaluation: Keyword-Based Scoring (LLaMA 3 via Groq)
+
+- **Dataset:** 40 real Catan-related questions
+- **Approach:** Check if expected keyword appears in the model output
+- **Result:**  
+  32 out of 40 matched  
+  → **Accuracy: 80%**
+
+#### Evaluation Results
+
+| Category             | Count | Percentage |
+|----------------------|-------|------------|
+| Correct            | 34    | 85.0 %     |
+| Partially correct  | 4     | 10.0 %     |
+| Incorrect          | 2     | 5.0 %      |
+
+> **Conclusion:**  
+The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **62.5% to 80%**, and manual review shows that **85%** of answers are now fully correct. This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
 
 
 ## References
