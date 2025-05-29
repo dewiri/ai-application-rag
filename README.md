@@ -50,7 +50,7 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 To enable meaningful and performant document retrieval, the rulebooks were processed into manageable "chunks". Over time, the chunking strategy evolved to support variant-awareness, semantic filtering, and hybrid retrieval.
 
-## ✂️ Chunking Strategy
+## Chunking Strategy
 
 | Version | Method                          | Configuration                         | Description                                                                 |
 |---------|----------------------------------|----------------------------------------|-----------------------------------------------------------------------------|
@@ -207,7 +207,7 @@ The chatbot was evaluated in two distinct stages:
 
 ### 1. Initial Evaluation (Single Vectorstore)
 
-#### 🔍 Method A: Keyword-Based Scoring (LLaMA 3 via Groq)
+#### Method A: Keyword-Based Scoring (LLaMA 3 via Groq)
 
 - **Dataset:** 40 real Catan-related questions
 - **Approach:** Check if expected keyword appears in the model output
@@ -215,7 +215,7 @@ The chatbot was evaluated in two distinct stages:
   25 out of 40 matched  
   → **Accuracy: 62.5%**
 
-#### 🔍 Method B: Manual Review (GPT-4o)
+#### Method B: Manual Review (GPT-4o)
 
 - **Approach:** Human-reviewed for overall correctness
 - **Results:**
