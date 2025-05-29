@@ -1,8 +1,8 @@
-# src/rerank.py
+# Altes Re-Ranking Modul. Sortiert semantisch die ähnlichsten Texte zur Nutzeranfrage nach dem initialen Retrieval nochmal.
 
 from sentence_transformers import CrossEncoder
 
-# Deutscher Kommentar: Cross-Encoder für finales Re-Ranking initialisieren
+# Cross-Encoder für finales Re-Ranking initialisieren
 reranker = CrossEncoder("cross-encoder/ms-marco-electra-base")
 
 def rerank(query: str, docs: list[str], top_n: int = 3) -> list[str]:

@@ -1,3 +1,9 @@
+#Automatisiert die Evaluation der Modellantworten
+# lädt Reihe von Fragen mit zugehörigem Spielvariantentyp
+# generiert für jede Frage eine Antwort
+# prüft, ob das erwartete Keyword in der Antwort vorkommt
+# Ergebnis wird speichert
+
 import sys
 import os
 import json
@@ -63,4 +69,4 @@ for i, entry in enumerate(questions, 1):
 with open(OUTPUT_FILE, "w") as f:
     json.dump(results, f, indent=2)
 
-print(f"\n✅ Evaluation completed. Saved to {OUTPUT_FILE}")
+print(f"\n Evaluation completed. Saved to {OUTPUT_FILE}")

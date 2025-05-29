@@ -1,3 +1,9 @@
+#Automatisiert die Evaluation der Modellantworten
+# lädt Reihe von Fragen (ohne Spielvariantentyp)
+# generiert für jede Frage eine Antwort
+# prüft, ob das erwartete Keyword in der Antwort vorkommt
+# Ergebnis wird speichert
+
 import sys
 import os
 import json

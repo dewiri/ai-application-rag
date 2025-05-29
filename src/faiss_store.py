@@ -1,3 +1,5 @@
+#Speicher und Zugriff der FAISS-Indizes – variantenspezifisch und mit Cosine Similarity:
+
 import faiss
 import numpy as np
 import pickle
@@ -44,7 +46,7 @@ def save_faiss_index(
     with open(path / "metadata.pkl", "wb") as f:
         pickle.dump(metadata, f)
 
-    print(f"✅ Cosine FAISS index saved for variant '{variant}'")
+    print(f"Cosine FAISS index saved for variant '{variant}'")
 
 def load_faiss_index(variant: str):
     """

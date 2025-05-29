@@ -1,4 +1,4 @@
-# src/evaluation.py
+# komplexere End-to-End-Evaluation der RAG-Pipeline 
 
 import os
 from dotenv import load_dotenv

@@ -2,7 +2,7 @@
 
 ---
 
-### 📘 Project Description
+### Project Description
 
 This is a **Retrieval-Augmented Generation (RAG)** application that acts as an expert assistant for the board game **Catan**, including the **base game** and all major **expansions**.
 
@@ -16,13 +16,16 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 ### Repository & Demo
 
-| Name                      | URL                                  |
-|---------------------------|---------------------------------------|
-| Streamlit App             | https://catan-rulebot.streamlit.app   |
-| Embedding Model (OpenAI)  | https://platform.openai.com/docs     |
-| Code (GitHub Repository)  | https://github.com/dewiri/ai-application-rag |
+| Name                      | URL / Info                                                               |
+|---------------------------|---------------------------------------------------------------------------|
+| Streamlit App          | [catan-rulebot.streamlit.app](https://catan-rulebot.streamlit.app)       |
+| Embedding Model        | [`all-MiniLM-L6-v2`](https://www.sbert.net/docs/pretrained_models.html) via `sentence-transformers` |
+| Vector DB              | FAISS – Local vector index per Catan variant                             |
+| LLM Backend            | [LLaMA 3 via Groq API](https://console.groq.com/docs) – used for answer generation |
+| GitHub Repository      | [github.com/dewiri/ai-application-rag](https://github.com/dewiri/ai-application-rag) |
 
----
+----
+
 
 ### Data Sources
 
@@ -45,54 +48,59 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 ### Method Used
 
-| Version | Type                          | Configuration                         | Description                                                                 |
-|---------|-------------------------------|----------------------------------------|-----------------------------------------------------------------------------|
-| 1       | Character-based               | Fixed size only                        | Naive splitting into chunks of fixed length without regard to semantics.   |
-| 2       | RecursiveCharacterTextSplitter | 1000 characters, 100 character overlap | Splits on paragraphs/sentences first (`\n\n`, `\n`, `.`, `!`, `?`, etc.), leading to more natural chunks. |
+To enable meaningful and performant document retrieval, the rulebooks were processed into manageable "chunks". Over time, the chunking strategy evolved to support variant-awareness, semantic filtering, and hybrid retrieval.
 
+## ✂️ Chunking Strategy
+
+| Version | Method                          | Configuration                         | Description                                                                 |
+|---------|----------------------------------|----------------------------------------|-----------------------------------------------------------------------------|
+| V1.0      | Character-based                 | Fixed size only                        | Naive splitting into fixed-length chunks without regard to semantics.       |
+| V2.0      | RecursiveCharacterTextSplitter  | 1000 characters, 100 character overlap | Smarter splitting at paragraph/sentence/punctuation boundaries for more coherent chunks. |
+| V2.1    | Variant-Aware Chunk Mapping     | Based on filename keywords             | Documents are automatically assigned to a game variant (e.g., `basegame`, `seafarers`) based on filename, enabling modular vectorstore creation. |
+| V2.2    | Semantic Filtering + Metadata   | Embedding + contextual metadata        | Each chunk is stored with associated variant metadata and embedding context, enabling hybrid retrieval, boosting, and transparent variant-aware retrieval. |
+
+> **V2.0–V2.2** are used in combination in the current system to provide clean, modular, and context-aware chunking and storage.
 
 ---
 
 ## Vector Store
 
-We use **FAISS** to store precomputed embeddings, enabling fast semantic search over rule texts.
+We use **FAISS** to store and retrieve dense embeddings for semantic search over Catan rule texts.
 
-### Version 1 (Initial Setup)
+### V1 – Initial Setup
 
-- One **single** FAISS vector store for all rulebooks combined  
-- Embeddings created with **OpenAI’s `text-embedding-ada-002`**  
-- Chunks stored once and reused at runtime  
+- Single **combined** FAISS index for all rulebooks  
+- Embeddings generated with **OpenAI’s `text-embedding-ada-002`**
+- No awareness of game variants or metadata
 
-### Version 2 (Updated – Variant-Aware)
+### V2 – Variant-Aware Indexing
 
-- One **dedicated FAISS vector store per game variant**  
-  (e.g., `basegame`, `seafarers`, `cities_knights`, etc.)  
-- Embeddings still created using **OpenAI’s `text-embedding-ada-002`**  
-- Stored **separately per rulebook**, enabling more precise, variant-specific retrieval and similarity scoring  
-- Allows **cross-variant comparisons**  
-  (e.g., “how does this rule differ in Seafarers vs. Basegame?”)  
+- One FAISS index **per game variant** (e.g., `basegame`, `seafarers`, `cities_knights`, etc.)
+- Uses V2.1 and V2.2 chunking methods for clean separation and flexibility
+- Chunks include **semantic embedding** and **variant metadata**
+- Enables:
+  - Precise retrieval by variant
+  - **Hybrid retrieval** (semantic + keyword scoring)
+  - **Cross-variant similarity analysis**
+  - Context-aware boosting and ranking logic
 
-> This upgrade enables a more accurate, modular, and explainable retrieval process.
-
----
-
-## LLMs Used
-
-| Name         | Access via | Usage                             |
-|--------------|------------|------------------------------------|
-| LLaMA 3 (70B) | Groq API   | Used for answering user questions |
+> This modular FAISS setup improves performance, precision, and explainability of retrieved answers.
 
 ---
 
-## UI
+## User Interface (Streamlit)
 
-- Built with **Streamlit**
-- Includes:
-  - Input field for user question
-  - LLM model
-  - Display of generated answer
-  - Expandable section for retrieved context
-  - Similarity analysis across all game variants
+- Built using **Streamlit** for simplicity and interactivity.
+- Core features include:
+
+  - **Natural language input**: Users can type any rule-related question.
+  - **LLM-powered answer generation**: Answers are generated based on retrieved rulebook content using LLaMA 3 via Groq.
+  - **Expandable context view**: Retrieved rulebook chunks are displayed for full transparency.
+  - **Hybrid retrieval toggle**: Option to enable/disable hybrid search (semantic + keyword-based).
+  - **Cross-variant similarity**: Displays top-matching rule passages from *other* game variants to highlight possible differences.
+  - **Score insights**: Dense, keyword, and hybrid scores are shown for each result when hybrid mode is active.
+
+> The UI is optimized for transparency and explainability, making rule interpretation easier across game variants.
 ---
 
 ## Retrieval Methods: Before vs. Now
@@ -107,16 +115,16 @@ We use **FAISS** to store precomputed embeddings, enabling fast semantic search 
 | Transparency                 | No insight into variant differences                         | Shows similarity scores across all variants to highlight rule differences |
 | User Experience              | Simpler but less accurate                                    | More informative and accurate, supports complex queries                 |
 
+
+>Together, these upgrades lead to more accurate, explainable, and variant-specific answers — a major step beyond naive, single-index retrieval.
+
 ---
 
-**Summary:**  
-The current system uses variant-specific vector stores with optional cross-variant similarity analysis, enabling more precise and transparent rule retrieval tailored to the selected game variant.
----
 # Hybrid Retrieval Enhancement
 
 ## Overview
 
-To improve the accuracy and relevance of retrieved rule passages for user queries, we implemented a **Hybrid Retrieval** method that combines:
+To improve the accuracy and relevance of retrieved rule passages for user queries, a **Hybrid Retrieval** method was implemented  that combines:
 
 - **Dense Semantic Similarity** (using FAISS and vector embeddings)
 - **Keyword-Based Matching** (using Jaccard similarity of query and chunk terms)
@@ -160,10 +168,10 @@ This approach balances semantic understanding with exact keyword overlap, leadin
 - Fetches twice as many chunks from FAISS (top_k * 2) for better candidate pool.
 - Returns the top_k chunks ranked by the hybrid score.
 - Each chunk includes:
-- `chunk`: Text snippet
-- `hybrid_score`: Combined score
-- `dense_score`: Semantic similarity component
-- `keyword_score`: Keyword overlap component
+  - `chunk`: Text snippet
+  - `hybrid_score`: Combined score
+  - `dense_score`: Semantic similarity component
+  - `keyword_score`: Keyword overlap component
 
 ---
 
@@ -182,18 +190,13 @@ This approach balances semantic understanding with exact keyword overlap, leadin
 | 2     | 0.384        | 0.615       | 0.037         |
 | 3     | 0.376        | 0.600       | 0.039         |
 
+
+### Score Interpretation
+
+> A perfect score of `1.0` would mean full semantic + keyword match — very rare in practice.  
+> In this context, **dense scores ≥ 0.60** and **keyword scores ~0.03–0.05** already indicate **strong retrieval quality**
+
 ---
-
-## Summary
-
-The hybrid retrieval mechanism significantly enhances the chatbot's ability to deliver accurate, relevant answers across different Catan game variants by leveraging both semantic understanding and keyword precision.
-
----
-
-## Environment
-
-- When running **locally**, environment variables (e.g. API keys) are loaded via `.env` using `python-dotenv`.
-- On **Streamlit Cloud**, all credentials are securely managed via **Streamlit secrets** (`.streamlit/secrets.toml`).
 
 
 ## Evaluation & Testing
@@ -243,9 +246,16 @@ The chatbot was evaluated in two distinct stages:
 | Partially correct  | 4     | 10.0 %     | Incomplete or slightly misleading            |
 | Incorrect          | 2     | 5.0 %      | Factually wrong or unclear                   |
 
-> **Conclusion:**  
-The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **62.5% to 80%**, and manual review shows that **85%** of answers are now fully correct. This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
+> **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **62.5% to 80%**, and manual review shows that **85%** of answers are now fully correct. This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
 
+---
+
+## Environment
+
+- When running **locally**, environment variables (e.g. API keys) are loaded via `.env` using `python-dotenv`.
+- On **Streamlit Cloud**, all credentials are securely managed via **Streamlit secrets** (`.streamlit/secrets.toml`).
+
+---
 
 ## References
 
@@ -254,6 +264,5 @@ The introduction of game variant-specific vectorstores significantly improved an
 - [Groq API Documentation](https://console.groq.com/docs)
 - [Streamlit Documentation](https://docs.streamlit.io/)
 - [LangChain – Text Splitters](https://docs.langchain.com/docs/components/text-splitters/)
-- [OpenAI API Documentation](https://platform.openai.com/docs)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 - [PDFPlumber – Extract text from PDFs](https://github.com/jsvine/pdfplumber)
