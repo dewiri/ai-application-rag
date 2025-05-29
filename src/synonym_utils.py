@@ -1,6 +1,11 @@
 import spacy
+import subprocess
 
-nlp = spacy.load("en_core_web_md")
+try:
+    nlp = spacy.load("en_core_web_md")
+except OSError:
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_md"], check=True)
+    nlp = spacy.load("en_core_web_md")
 
 def expand_with_synonyms(text: str, top_k: int = 2) -> set[str]:
     """
