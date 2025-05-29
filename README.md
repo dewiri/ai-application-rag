@@ -52,14 +52,15 @@ To enable meaningful and performant document retrieval, the rulebooks were proce
 
 ## Chunking Strategy
 
-| Version | Method                          | Configuration                         | Description                                                                 |
-|---------|----------------------------------|----------------------------------------|-----------------------------------------------------------------------------|
-| V1.0      | Character-based                 | Fixed size only                        | Naive splitting into fixed-length chunks without regard to semantics.       |
-| V2.0      | RecursiveCharacterTextSplitter  | 1000 characters, 100 character overlap | Smarter splitting at paragraph/sentence/punctuation boundaries for more coherent chunks. |
-| V2.1    | Variant-Aware Chunk Mapping     | Based on filename keywords             | Documents are automatically assigned to a game variant (e.g., `basegame`, `seafarers`) based on filename, enabling modular vectorstore creation. |
-| V2.2    | Semantic Filtering + Metadata   | Embedding + contextual metadata        | Each chunk is stored with associated variant metadata and embedding context, enabling hybrid retrieval, boosting, and transparent variant-aware retrieval. |
+| Version | Method                              | Configuration                         | Description                                                                                                                                                                      |
+|---------|--------------------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| V1.0    | Character-based                      | Fixed size only                        | Naive splitting into fixed-length chunks without considering sentence or paragraph boundaries. **Discarded** due to incoherent chunks that break mid-sentence.                  |
+| V2.0    | SentenceTransformersTokenTextSplitter | Max 256 tokens                         | Token-based semantic splitting. **Not used in the final system** because it produced many overly short chunks, which are unsuitable for rule-heavy texts like board game manuals. |
+| V3.0    | RecursiveCharacterTextSplitter       | 1000 characters, 100 character overlap | Paragraph-aware splitting that preserves semantic coherence. Well-suited for structured texts like rulebooks.                                                                  |
+| V3.1    | Variant-Aware Chunk Mapping          | Based on filename keywords             | Automatically assigns documents to game variants (e.g., `basegame`, `seafarers`), enabling **modular vector store creation** and variant-specific retrieval.                    |
+| V3.2    | Semantic Filtering + Metadata        | Embedding + contextual metadata        | Each chunk is stored with **variant metadata and embeddings**, enabling hybrid retrieval, score boosting, and transparent variant-aware search and evaluation.                 |
 
-> **V2.0–V2.2** are used in combination in the current system to provide clean, modular, and context-aware chunking and storage.
+> **V3.0–V3.2** are combined in the current system to provide clean, modular, and context-aware chunking and retrieval.
 
 ---
 
