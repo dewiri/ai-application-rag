@@ -123,7 +123,7 @@ To increase the relevance and accuracy of retrieved rulebook passages, a **hybri
 | Initial Evaluation (Single Vectorstore)                             | 65.0%   | 77.8%      |  72.4% | 75.0%  |
 | Game variant-specific vectorstores                                  | 77.5%   | 92.3%      | 77.4%  | 84.1%  |
 
-> **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **65.0% to 77.5%**This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
+> **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **65.0% to 77.5%** This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
 ---
 ### Final Evaluation
 Per Game Variant, [10 questions](https://github.com/dewiri/ai-application-rag/blob/main/tests/all_questions.py) were posed in the Streamlit app, and for each variant the system answered correctly.
