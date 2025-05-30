@@ -56,7 +56,7 @@
     ],
   },
   "ExplorersPiratesExpansion": {
-    "1–6 Players": [
+    "3–6 Players": [
       "How do “Pirate Ships” function differently from the Robber in previous expansions?",
       "In the “Exploration” scenario, what determines when a new hex is revealed?",
       "What are “Mission Cards,” and how do players earn points from them?",
