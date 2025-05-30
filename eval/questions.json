@@ -39,4 +39,4 @@
   {"question": "What is a gold field?", "expected_keyword": "any"},
   {"question": "Can I lose a city?", "expected_keyword": "barbarian"},
   {"question": "How many trade routes can I control?", "expected_keyword": "unlimited"}
-]
+] 
