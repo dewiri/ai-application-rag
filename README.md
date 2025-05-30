@@ -126,7 +126,7 @@ To increase the relevance and accuracy of retrieved rulebook passages, a **hybri
 > **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **65.0% to 77.5%**This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
 ---
 ### Final Evaluation
-Per Game Variant, 10 questions were posed in the Streamlit app, and for each variant the system answered correctly.
+Per Game Variant, [10 questions](https://github.com/dewiri/ai-application-rag/blob/main/tests/all_questions.py) were posed in the Streamlit app, and for each variant the system answered correctly.
 
 >You can also explore per-question insights in the improved Streamlit application – view the retrieved context, hybrid retrieval analysis, and similarity scores across all game variants to dig deeper into each classification decision. All detailed results and evaluation metrics are live in the Streamlit app—and they’re updated per question
 
