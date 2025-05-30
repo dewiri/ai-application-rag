@@ -42,17 +42,18 @@ The system retrieves relevant rule passages and uses a language model to generat
 
 ## RAG Improvements
 
-| Improvement                 | Description                                                                 |
-|----------------------------|-----------------------------------------------------------------------------|
-| Hybrid Retrieval            | Combines semantic similarity + keyword matching (Jaccard)                   |
-| Variant-Aware Indexing      | Each game version has its own FAISS index                                   |
-| Cross-Variant Scoring       | Displays similarity per rule variant to highlight nuanced differences       |
-| Metadata Filtering          | Chunks contain variant and position metadata for structured retrieval       |
-| Score Boosting              | Boosts scores when important keywords are detected in chunks                |
-| Retrieval Transparency      | UI shows dense, keyword, and hybrid scores for each chunk                   |
-| Chunking Enhancements       | Used sentence-aware, overlapping chunking with variant tagging              |
-| Modular Vectorstores        | Vector databases are modular, one per game variant                          |
+| Aspect                        | Before (Single-Variant Retrieval)                            | Now (Variant-Aware Retrieval + Cross-Variant Analysis)                  |
+|-------------------------------|--------------------------------------------------------------|-------------------------------------------------------------------------|
+| Vector Store Setup             | One single FAISS index for all game rules combined           | Separate FAISS index per game variant (basegame, seafarers, etc.)       |
+| Query Execution               | Search performed on the combined index                        | Search primarily on selected variant’s index                            |
+| Cross-Variant Comparison      | Not available                                                | Question also compared across all variant indexes for similarity        |
+| Hybrid Retrieval              | Not implemented                                              | Combines semantic similarity and keyword matching within variant       |
+| Result Precision             | Lower precision, generic answers                             | Higher precision, variant-specific answers                             |
+| Transparency                 | No insight into variant differences                         | Shows similarity scores across all variants to highlight rule differences |
+| User Experience              | Simpler but less accurate                                    | More informative and accurate, supports complex queries                 |
+| Chunking Strategy         | Naive fixed-length splits, often incoherent                   | Sentence-aware, overlapping chunks via spaCy sentence detection     |
 
+>Together, these upgrades lead to more accurate, explainable, and variant-specific answers — a major step beyond naive, single-index retrieval.
 ---
 
 ## Chunking
@@ -122,7 +123,7 @@ To increase the relevance and accuracy of retrieved rulebook passages, a **hybri
 | Initial Evaluation (Single Vectorstore)                             | 65.0%   | 77.8%      |  72.4% | 75.0%  |
 | Game variant-specific vectorstores                                  | 77.5%   | 92.3%      | 77.4%  | 84.1%  |
 
-> **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **62.5% to 80%**, and manual review shows that **85%** of answers are now fully correct. This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
+> **Conclusion:**  The introduction of game variant-specific vectorstores significantly improved answer quality. Keyword match accuracy rose from **65.0% to 77.5%**This demonstrates the value of routing queries through variant-aware context retrieval for more accurate and relevant rule-based responses.
 ---
 ### Final Evaluation
 Per Game Variant, 10 questions were posed in the Streamlit app, and for each variant the system answered correctly.
